@@ -18,6 +18,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "hotnode": "0.0.8",
-    "log4js": "^0.6.38"
+    "log4js": "^0.6.38",
+    "mongoose": "^4.6.1"
   }
 }

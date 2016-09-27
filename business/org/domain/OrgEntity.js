@@ -1,11 +1,10 @@
 /**
- * @desc 组织机构实体
+ * @desc 用户Entity实体（对应表）
  * @require
  * @author jianfeng_huang.
- * @date 2016/9/26.
+ * @date 2016/9/27.
  */
-
-var Org = function (obj) {
+var OrgEntity = function (obj) {
     if(obj){
         this.id = obj.id;
         this.name = obj.name; //组织机构名称
@@ -17,4 +16,4 @@ var Org = function (obj) {
     }
 };
 
-module.exports = Org;
+module.exports = OrgEntity;
