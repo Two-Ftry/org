@@ -43,9 +43,9 @@ TeamDao.prototype.deleteById = function(id){
             }));
         }else{
             console.log('dao 删除成功!!');
-            deferred.resolve(mew Result({
+            deferred.resolve(new Result({
                 code: Code.__SUCCESS__
-            });
+            }));
         }
     });
     return deferred.promise;
