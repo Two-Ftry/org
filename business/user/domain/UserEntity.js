@@ -27,6 +27,4 @@ var UserEntity = function (obj) {
     }
 };
 
-
-
 module.exports = UserEntity;

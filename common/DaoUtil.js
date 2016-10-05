@@ -7,18 +7,39 @@
 
 var mongoose = require('mongoose');
 
-var __DB_URL__ = '127.0.0.1';
+var dbConfig = require('../config/dbConfig');
+
+var connectionUrl = 'mongodb://' + dbConfig.userName + ':' + dbConfig.pwd + '@'
+    + dbConfig.ip　+':' + dbConfig.port + '/'
+    + dbConfig.db + '?authSource=' + dbConfig.db + '';
+
 
 var DaoUtil = function () {
-
 };
 
-DaoUtil.connection = function (tableName) {
-    var db = mongoose.createConnection(__DB_URL__, tableName);
-    return db;
+//创建一个单例连接
+DaoUtil.createConnection = function () {
+    if(!DaoUtil.connection){
+        DaoUtil.connection = mongoose.createConnection(connectionUrl);
+
+        DaoUtil.connection.on('error', console.error.bind(console, '连接数据库报错!!!'));
+        DaoUtil.connection.on('open', function(){
+            console.log('打开数据库连接!!!');
+        });
+    }
+    return DaoUtil.connection;
 };
 
-
+//获取表model
+DaoUtil.getModel = function(columnsJson, tableName){
+    var Schema = mongoose.Schema;
+    var _schema = new Schema(columnsJson);
+    if(!DaoUtil.connection){
+        console.log('try to create a mongodb connection!!!');
+        DaoUtil.createConnection();
+    }
+    return DaoUtil.connection.model(tableName, _schema);
+};
 
 
 module.exports = DaoUtil;

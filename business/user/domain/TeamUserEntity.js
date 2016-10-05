@@ -10,7 +10,6 @@ var TeamUserEntity = function (obj) {
         this.tid = obj.tid; //工作圈ID
         this.userId = obj.userId; //用户ID
         this.isInit = obj.isInit; //是否是默认的工作圈
-        this.isAdmin = obj.isAdmin; //是否是管理员
     }
 };
 
