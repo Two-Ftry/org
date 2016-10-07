@@ -16,4 +16,17 @@ var OrgEntity = function (obj) {
     }
 };
 
+//schema
+OrgEntity.prototype.getSchema = function() {
+    return {
+        id:{type: String},
+        name:{type: String},
+        parentOrgId:{type: String},
+        isTop:{type: Boolean},
+        tid:{type: String},
+        createTime:{type: Date},
+        updateTime:{type: Date}
+    };
+};
+
 module.exports = OrgEntity;

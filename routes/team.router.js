@@ -19,7 +19,7 @@ router.post('/save', function (req, res) {
     teamService.save(entity);
     res.json({
         result: 'success'
-    })
+    });
 });
 
 router.post('/deleteById', function(req, res){
@@ -51,23 +51,20 @@ router.post('/getTeamById', function (req, res) {
     var id = req.body.id;
     if(id){
         teamService.getTeamById(id).then(function(data){
-            if(data){
-                res.send(new Result({
-                    code: Code.__SUCCESS__,
-                    data: data
-                }));
-            }else{
-                res.send(new Result({
-                    code: Code.__SERVER_ERROR__,
-                    msg: 'Cannot find data'
-                }));
-            }
+            res.send(data);
+            //if(data){
+            //    res.send(new Result({
+            //        code: Code.__SUCCESS__,
+            //        data: data
+            //    }));
+            //}else{
+            //    res.send(new Result({
+            //        code: Code.__SERVER_ERROR__,
+            //        msg: 'Cannot find data'
+            //    }));
+            //}
         }, function (err) {
-            res.send(new Result({
-                code: Code.__SERVER_ERROR__,
-                err: err,
-                msg: ''
-            }));
+            res.send(err);
         });
     }else{
         res.send(new Result({

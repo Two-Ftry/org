@@ -7,8 +7,23 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function (req, res) {
-    res.send('org router');
+var OrgService = require('../business/org/service/OrgService');
+var OrgEntity = require('../business/org/domain/OrgEntity');
+var Util = require('../common/Util');
+
+var orgService = new OrgService();
+
+/**
+ * 新建Org
+ */
+router.post('/save', function (req, res) {
+    var entity = Util.getEntityInstance(req.body, new OrgEntity());
+    orgService.save(entity).then(function (data) {
+        res.send(data);
+    }, function (err) {
+        res.send(err);
+    });
+
 });
 
 module.exports = router;

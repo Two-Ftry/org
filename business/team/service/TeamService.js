@@ -15,7 +15,7 @@ var teamDao = new TeamDao();
 //保存工作圈
 TeamService.prototype.save = function(team){
     if(!team.createTime){
-        team.createTime = new Date();
+        team.createTime = new Date().getTime();
         team.updateTime = team.createTime;
     }
     teamDao.save(team);
@@ -68,9 +68,24 @@ TeamService.prototype.getTeamById = function(id){
     }
 
     teamDao.getTeamById(id).then(function (team) {
-        deferred.resolve(team);
+        //deferred.resolve(team);
+        if(team){
+            deferred.resolve(new Result({
+                code: Code.__SUCCESS__,
+                data: team
+            }));
+        }else{
+            deferred.reject(new Result({
+                code: Code.__SERVER_ERROR__,
+                msg: '找不到对应的工作圈'
+            }));
+        }
     }, function (err) {
-        deferred.resolve(err);
+        deferred.reject(new Result({
+         code: Code.__SERVER_ERROR__,
+         error: err,
+         msg: '找不到对应的工作圈'
+        }));
     });
 
     return deferred.promise;
@@ -89,6 +104,9 @@ TeamService.prototype.updateTeamById = function (team) {
         }, 200);
         return deferred.promise;
     }
+
+    //更新updateTime
+    team.updateTime = new Date().getTime();
 
     teamDao.updateTeamById(team).then(function (data) {
         deferred.resolve(data);
