@@ -29,7 +29,19 @@ TeamDao.prototype.save = function(team){
 TeamDao.prototype.deleteById = function(id){
     var deferred = Q.defer();
 
+    if(!id){
+        setTimeout(function () {
+            deferred.reject(new Result({
+                code: Code.__NOT_FOUND__,
+                error: {},
+                msg: 'id cannot be empty'
+            }));
+        }, 200);
+        return deferred.promise;
+    }
+
     if(!TeamModel){
+        var teamSchema = new TeamEntity().getSchema();
         TeamModel =  DaoUtil.getModel(teamSchema, _teamTableName);
     }
 
@@ -52,18 +64,108 @@ TeamDao.prototype.deleteById = function(id){
 };
 
 //更新工作圈
-TeamDao.prototype.updateById = function(team){
-    //TODO
+TeamDao.prototype.updateTeamById = function(team){
+    var deferred = Q.defer();
+
+    if(!team || !team.id){
+        setTimeout(function () {
+            deferred.reject(new Result({
+                code: Code.__NOT_FOUND__,
+                msg: 'dao id cannot be empty'
+            }));
+        }, 200);
+        return deferred.promise;
+    }
+
+    if(!TeamModel){
+        var teamSchema = new TeamEntity().getSchema();
+        TeamModel =  DaoUtil.getModel(teamSchema, _teamTableName);
+    }
+
+    TeamModel.findByIdAndUpdate(team.id, team, function (err, data) {
+        if(err){
+            deferred.reject(err);
+        } else{
+            deferred.resolve(data);
+        }
+    });
+
+    return deferred.promise;
 };
 
 //查询工作圈列表
-TeamDao.prototype.getTeamList = function(conditions){
-    //TODO
+TeamDao.prototype.getTeamList = function(query){
+    var deferred = Q.defer();
+    var _query = {
+    };
+
+    if(query.keyword){
+        var keywordStr = '/' + query.keyword + '/i';
+        _query = {
+            "$or":[
+                {name: eval(keywordStr)},
+                {type: eval(keywordStr)},
+                {industry: eval(keywordStr)},
+                {scale: eval(keywordStr)}
+            ]
+        };
+    }
+
+    if(!TeamModel){
+        var teamSchema = new TeamEntity().getSchema();
+        TeamModel =  DaoUtil.getModel(teamSchema, _teamTableName);
+    }
+
+    TeamModel.find(_query, null, {skip: query.start, limit: query.limit}, function(err, dataList){
+        if(err){
+            console.log('dao getImgList', err);
+            deferred.reject(err);
+        }else{
+            TeamModel.count(_query, function(err, count){
+                if(err){
+                    console.log('dao getImgList count', err);
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve({
+                        count: count,
+                        data: dataList
+                    });
+                }
+            });
+        }
+    });
+    return deferred.promise;
 };
 
 //根据ID获取工作圈内容
 TeamDao.prototype.getTeamById = function(id){
-    //TODO
+    var deferred = Q.defer();
+
+    if(!id){
+        setTimeout(function () {
+            deferred.reject(new Result({
+                code: Code.__NOT_FOUND__,
+                error: {},
+                msg: 'id cannot be empty'
+            }));
+        }, 200);
+        return deferred.promise;
+    }
+
+    if(!TeamModel){
+        var teamSchema = new TeamEntity().getSchema();
+        TeamModel =  DaoUtil.getModel(teamSchema, _teamTableName);
+    }
+
+    TeamModel.findById(id, function (err, team) {
+       if(err){
+           deferred.reject(err);
+       } else{
+            deferred.resolve(team);
+       }
+    });
+
+    return deferred.promise;
 };
 
 module.exports = TeamDao;
