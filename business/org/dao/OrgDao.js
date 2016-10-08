@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/10/7 0007.
  */
-
+var Q = require('q');
 
 var DaoUtil = require('../../../common/DaoUtil');
 var Util = require('../../../common/Util');
@@ -51,7 +51,29 @@ OrgDao.prototype.deleteById = function (id) {
  * @param id
  */
 OrgDao.prototype.getOrgById = function(id){
-  //TODO
+  var deferred = Q.defer();
+
+    if(!id){
+        Util.setTimeoutReject(deferred, {
+            error: 'Id 不能为空'
+        });
+      return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.findById(id, function (err, data) {
+        if(err){
+            deferred.reject(err);
+        }else{
+            deferred.resolve(data);
+        }
+    });
+
+    return deferred.promise;
 };
 
 /**

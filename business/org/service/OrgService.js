@@ -10,6 +10,7 @@ var Code = require('../../../common/domain/Code');
 var Result = require('../../../common/domain/Result');
 var ConstUtil = require('../../../common/ConstUtil');
 var TeamService = require('../../team/service/TeamService');
+var Util = require('../../../common/Util');
 
 var OrgService = function () {};
 
@@ -21,7 +22,7 @@ var orgDao = new OrgDao();
 OrgService.prototype.save = function(org){
     var deferred = Q.defer();
     if(!org){
-        deferred.reject(new Result({
+        Util.setTimeoutReject(deferred, new Result({
             code: Code.__SERVER_ERROR__,
             msg: '对象不能为null'
         }));
@@ -29,7 +30,7 @@ OrgService.prototype.save = function(org){
     }
 
     if(!org.tid){
-        deferred.reject(new Result({
+        Util.setTimeoutReject(deferred, new Result({
             code: Code.__NOT_FOUND__,
             msg: 'tid 不能为空'
         }));
@@ -37,7 +38,13 @@ OrgService.prototype.save = function(org){
     }
 
     var teamService = new TeamService();
-    Q.all([teamService.getTeamById(org.tid)]).done(function(values){
+    var promiseArray = [teamService.getTeamById(org.tid)];
+    if(org.parentOrgId){
+        //parentOrgId是否存在
+        promiseArray.push(this.getOrgById(org.parentOrgId));
+    }
+
+    Q.all(promiseArray).then(function(values){
         console.log('getTeamById done:', values);
         //默认不是顶级机构
         if(org.isTop == null || org.isTop == undefined){
@@ -62,33 +69,13 @@ OrgService.prototype.save = function(org){
                 msg: '创建Org失败'
             }));
         }
-    }).fail(function (err) {
+    },function (err) {
         console.log('getTeamById err:', err);
-        deferred.reject(new Result({
-            code: Code.__SERVER_ERROR__,
-            error: err,
-            msg: ''
-        }));
+        deferred.reject(err);
     });
 
-    //teamService.getTeamById(org.tid).then(function (data) {
-    //    //TODO
-    //
-    //}, function (err) {
-    //    return new Result({
-    //        code: Code.__NOT_FOUND__,
-    //        error: err,
-    //        xmsg: '找不到对应的工作圈'
-    //    });
-    //});
 
-
-
-    //if(org.parentOrgId){
-    //    //TODO parentOrgId是否存在
-    //}
-
-    return deferred.promsise;
+    return deferred.promise;
 };
 
 /**
@@ -112,7 +99,30 @@ OrgService.prototype.deleteById = function (id) {
  * @param id
  */
 OrgService.prototype.getOrgById = function(id){
-    //TODO
+    var deferred = Q.defer();
+
+    if(!id){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__SERVER_ERROR__,
+            msg: 'Id 不能为空'
+        }));
+        return deferred.promise;
+    }
+
+    orgDao.getOrgById(id).then(function (data) {
+       deferred.resolve(new Result({
+           code: Code.__SUCCESS__,
+           data: data
+       }));
+    }, function (err) {
+        deferred.reject(new Result({
+            code: Code.__SERVER_ERROR__,
+            error: err,
+            msg: '获取组织信息失败'
+        }));
+    });
+
+    return deferred.promise;
 };
 
 /**

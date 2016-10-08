@@ -39,5 +39,16 @@ Util.getQueryInstance = function(reqBody){
     return query;
 };
 
+/**
+ * 对于进行异步封装的方法中，在立即返回时，需要有一个延迟，使用该方法
+ * @param deferred
+ * @param result
+ * @param delay  默认20毫秒
+ */
+Util.setTimeoutReject = function (deferred, result, delay) {
+  setTimeout(function () {
+      deferred.reject(result);
+  }, delay || 20)
+};
 
 module.exports = Util;

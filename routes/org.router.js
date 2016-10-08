@@ -21,9 +21,22 @@ router.post('/save', function (req, res) {
     orgService.save(entity).then(function (data) {
         res.send(data);
     }, function (err) {
+        console.log('org router', err);
         res.send(err);
     });
 
+});
+
+/**
+ * 根据Id获取Org信息
+ */
+router.post('/getOrgById', function (req, res) {
+   var id = req.body.id;
+    orgService.getOrgById(id).then(function (data) {
+        res.send(data);
+    }, function (err) {
+        res.send(err);
+    })
 });
 
 module.exports = router;
