@@ -39,4 +39,16 @@ router.post('/getOrgById', function (req, res) {
     })
 });
 
+/**
+ * 更新org信息
+ */
+router.post('/updateOrgById', function (req, res) {
+    var org = Util.getEntityInstance(req.body, new OrgEntity(), true);
+    orgService.updateOrgById(org).then(function (data) {
+        res.send(data);
+    }, function (err) {
+        res.send(err);
+    })
+});
+
 module.exports = router;

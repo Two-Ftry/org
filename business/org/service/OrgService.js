@@ -83,7 +83,46 @@ OrgService.prototype.save = function(org){
  * @param org
  */
 OrgService.prototype.updateOrgById = function(org){
-    //TODO
+    var deferred = Q.defer();
+
+    if(!org || !org.id){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__NOT_FOUND__,
+            msg: 'org id 不能为空'
+        }));
+        return deferred.promise;
+    }
+
+    //不允许修改isTop、tid这两个属性
+    if(org.isTop){
+        //TODO
+    }
+    if(org.tid){
+        //TODO
+    }
+
+    //允许修改parentOrgId，但是只有在org.id不是顶级组织，并且parentOrgId存在与当前圈的情况下才允许修改。
+    if(org.parentOrgId){
+        //TODO
+    }
+
+    //更新时间
+    org.updateTime = new Date().getTime();
+
+    orgDao.updateOrgById(org).then(function (data) {
+       deferred.resolve(new Result({
+           code: Code.__SUCCESS__,
+           data: data
+       }));
+    }, function (err) {
+        deferred.reject(new Result({
+            code: Code.__NOT_FOUND__,
+            error: err,
+            msg: err.msg || ''
+        }));
+    });
+
+    return deferred.promise;
 };
 
 /**

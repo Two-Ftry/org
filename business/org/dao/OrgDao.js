@@ -35,7 +35,23 @@ OrgDao.prototype.save = function(org){
  * @param org
  */
 OrgDao.prototype.updateOrgById = function(org){
-    //TODO
+    var deferred = Q.defer();
+
+    if(!org || !org.id){
+        Util.setTimeoutReject(deferred, {
+            error: 'org id 不能为空'
+        });
+        return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.findByIdAndUpdate(org.id, org, deferred.makeNodeResolver());
+
+    return deferred.promise;
 };
 
 /**
