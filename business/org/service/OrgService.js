@@ -95,32 +95,46 @@ OrgService.prototype.updateOrgById = function(org){
 
     //不允许修改isTop、tid这两个属性
     if(org.isTop){
-        //TODO
+        delete org.isTop;
     }
     if(org.tid){
-        //TODO
+        delete org.tid;
     }
 
     //允许修改parentOrgId，但是只有在org.id不是顶级组织，并且parentOrgId存在与当前圈的情况下才允许修改。
     if(org.parentOrgId){
         //TODO
+        //this.getOrgById(org.id)
+        //this.getOrgsByCondition
+        var promiseArray = [];
+        promiseArray.push(this.getOrgById(org.id));
+        //TODO
+        promiseArray.push(this.getOrgsByCondition({id: parentOrgId, tid: ''}));
+        Q.all(promiseArray).then(function (values) {
+            console.log('update org byId:', values);
+            //更新时间
+            org.updateTime = new Date().getTime();
+
+            //保存org信息
+            orgDao.updateOrgById(org).then(function (data) {
+                deferred.resolve(new Result({
+                    code: Code.__SUCCESS__,
+                    data: data
+                }));
+            }, function (err) {
+                deferred.reject(new Result({
+                    code: Code.__NOT_FOUND__,
+                    error: err,
+                    msg: err.msg || '保存org信息失败'
+                }));
+            });
+
+        }, function (err) {
+            deferred.reject(err);
+        });
     }
 
-    //更新时间
-    org.updateTime = new Date().getTime();
 
-    orgDao.updateOrgById(org).then(function (data) {
-       deferred.resolve(new Result({
-           code: Code.__SUCCESS__,
-           data: data
-       }));
-    }, function (err) {
-        deferred.reject(new Result({
-            code: Code.__NOT_FOUND__,
-            error: err,
-            msg: err.msg || ''
-        }));
-    });
 
     return deferred.promise;
 };
@@ -177,8 +191,64 @@ OrgService.prototype.getSubOrgsByParentOrgId = function (id) {
  * @param tid
  */
 OrgService.prototype.getTopOrgByTid = function (tid) {
-    //TODO
+    var deferred = Q.defer();
+
+    if(!tid){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__NOT_FOUND__,
+            msg: 'tid不能为空'
+        }));
+        return deferred.promise;
+    }
+
+    orgDao.getTopOrgByTid(tid).then(function(data){
+        deferred.resolve(new Result({
+            code: Code.__SUCCESS__,
+            data: data
+        }));
+    }, function (err) {
+       deferred.reject(new Result({
+           code: Code.__SERVER_ERROR__,
+           error: err,
+           msg: '获取org信息失败'
+       }));
+    });
+
+    return deferred.promise;
 };
+
+/**
+ *
+ * @param query
+ * @returns {*|promise}
+ */
+OrgService.prototype.getOrgsByCondition = function (query) {
+    var deferred = Q.defer();
+
+    if(!tid){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__NOT_FOUND__,
+            msg: '条件不能为空'
+        }));
+        return deferred.promise;
+    }
+
+    orgDao.getOrgsByCondition(query).then(function(data){
+        deferred.resolve(new Result({
+            code: Code.__SUCCESS__,
+            data: data
+        }));
+    }, function (err) {
+        deferred.reject(new Result({
+            code: Code.__SERVER_ERROR__,
+            error: err,
+            msg: '获取org信息失败'
+        }));
+    });
+
+    return deferred.promise;
+};
+
 
 /**
  * 根据tid一次性查出组织机构的所有信息

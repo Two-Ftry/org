@@ -51,4 +51,16 @@ router.post('/updateOrgById', function (req, res) {
     })
 });
 
+/**
+ * 根据tid获取org信息
+ */
+router.post('/getTopOrgByTid', function (req, res) {
+   var tid = req.body.tid;
+    orgService.getTopOrgByTid(tid).then(function (data) {
+        res.send(data);
+    }, function (err) {
+        res.send(err);
+    });
+});
+
 module.exports = router;

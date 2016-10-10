@@ -105,7 +105,61 @@ OrgDao.prototype.getSubOrgsByParentOrgId = function (id) {
  * @param tid
  */
 OrgDao.prototype.getTopOrgByTid = function (tid) {
-    //TODO
+    var deferred = Q.defer();
+
+    if(!tid){
+        Util.setTimeoutReject(deferred, {
+            error: 'tid 不能为空'
+        });
+        return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.find({tid: tid, isTop: true}, function (err, data) {
+        console.log('dao :', err);
+        if(err){
+            deferred.reject(err);
+        }else{
+            deferred.resolve(data);
+        }
+    });
+
+    return deferred.promise;
+};
+
+/**
+ * 根据tid（工作圈id）获取第一级组织机构的信息(每个tid只有一个top org)
+ * @param tid
+ */
+OrgDao.prototype.getOrgsByCondition = function (condition) {
+    var deferred = Q.defer();
+
+    if(!condition){
+        Util.setTimeoutReject(deferred, {
+            error: '条件不能为空'
+        });
+        return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.find(condition, function (err, data) {
+        console.log('dao getOrgsByCondition:', err, data);
+        if(err){
+            deferred.reject(err);
+        }else{
+            deferred.resolve(data);
+        }
+    });
+
+    return deferred.promise;
 };
 
 /**
