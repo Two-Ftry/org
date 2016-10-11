@@ -151,7 +151,6 @@ OrgDao.prototype.getOrgsByCondition = function (condition) {
     }
 
     OrgModel.find(condition, function (err, data) {
-        console.log('dao getOrgsByCondition:', err, data);
         if(err){
             deferred.reject(err);
         }else{

@@ -45,7 +45,6 @@ OrgService.prototype.save = function(org){
     }
 
     Q.all(promiseArray).then(function(values){
-        console.log('getTeamById done:', values);
         //默认不是顶级机构
         if(org.isTop == null || org.isTop == undefined){
             org.isTop = false;
@@ -93,6 +92,14 @@ OrgService.prototype.updateOrgById = function(org){
         return deferred.promise;
     }
 
+    if(org.parentOrgId && org.id == org.parentOrgId){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__NOT_FOUND__,
+            msg: 'orgId 不能和 parentOrgId相等'
+        }));
+        return deferred.promise;
+    }
+
     //不允许修改isTop、tid这两个属性
     if(org.isTop){
         delete org.isTop;
@@ -101,40 +108,61 @@ OrgService.prototype.updateOrgById = function(org){
         delete org.tid;
     }
 
+    //更新时间
+    org.updateTime = new Date().getTime();
+
     //允许修改parentOrgId，但是只有在org.id不是顶级组织，并且parentOrgId存在与当前圈的情况下才允许修改。
     if(org.parentOrgId){
-        //TODO
-        //this.getOrgById(org.id)
-        //this.getOrgsByCondition
+
         var promiseArray = [];
         promiseArray.push(this.getOrgById(org.id));
-        //TODO
-        promiseArray.push(this.getOrgsByCondition({id: parentOrgId, tid: ''}));
+        //TODO 此处getOrgsByCondition需要加上 tid: 'xx'的查询条件，要完成了用户登录功能后再完成
+        promiseArray.push(this.getOrgsByCondition({_id: org.parentOrgId}));
         Q.all(promiseArray).then(function (values) {
-            console.log('update org byId:', values);
-            //更新时间
-            org.updateTime = new Date().getTime();
-
-            //保存org信息
-            orgDao.updateOrgById(org).then(function (data) {
-                deferred.resolve(new Result({
-                    code: Code.__SUCCESS__,
-                    data: data
-                }));
-            }, function (err) {
+            var orgResult = values[0];
+            var parentOrgResult = values[1];
+            if(orgResult && orgResult.data && parentOrgResult
+                && parentOrgResult.data &&
+                parentOrgResult.data.length == 1){//數據存在
+                //保存org信息
+                orgDao.updateOrgById(org).then(function (data) {
+                    deferred.resolve(new Result({
+                        code: Code.__SUCCESS__,
+                        data: data
+                    }));
+                }, function (err) {
+                    deferred.reject(new Result({
+                        code: Code.__NOT_FOUND__,
+                        error: err,
+                        msg: err.msg || '保存org信息失败'
+                    }));
+                });
+            }else{
                 deferred.reject(new Result({
-                    code: Code.__NOT_FOUND__,
-                    error: err,
-                    msg: err.msg || '保存org信息失败'
+                    code: Code.__SERVER_ERROR__,
+                    msg: 'id不存在或者parentOrgId不存在'
                 }));
-            });
+            }
 
         }, function (err) {
             deferred.reject(err);
         });
+    }else{
+
+        //保存org信息
+        orgDao.updateOrgById(org).then(function (data) {
+            deferred.resolve(new Result({
+                code: Code.__SUCCESS__,
+                data: data
+            }));
+        }, function (err) {
+            deferred.reject(new Result({
+                code: Code.__NOT_FOUND__,
+                error: err,
+                msg: err.msg || '保存org信息失败'
+            }));
+        });
     }
-
-
 
     return deferred.promise;
 };
@@ -225,14 +253,13 @@ OrgService.prototype.getTopOrgByTid = function (tid) {
 OrgService.prototype.getOrgsByCondition = function (query) {
     var deferred = Q.defer();
 
-    if(!tid){
+    if(!query){
         Util.setTimeoutReject(deferred, new Result({
             code: Code.__NOT_FOUND__,
             msg: '条件不能为空'
         }));
         return deferred.promise;
     }
-
     orgDao.getOrgsByCondition(query).then(function(data){
         deferred.resolve(new Result({
             code: Code.__SUCCESS__,
