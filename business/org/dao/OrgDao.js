@@ -59,7 +59,61 @@ OrgDao.prototype.updateOrgById = function(org){
  * @param id
  */
 OrgDao.prototype.deleteById = function (id) {
-    //TODO
+    var deferred = Q.defer();
+
+    if(!id){
+        Util.setTimeoutReject(deferred, {
+            error: 'Id 不能为空'
+        });
+        return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.findByIdAndRemove(id, function (err, data) {
+       if(err){
+           deferred.reject(err);
+       } else{
+           deferred.resolve(data||{});
+       }
+    });
+
+    return deferred.promise;
+
+};
+
+/**
+ * 根据条件删除组织机构
+ * @param id
+ */
+OrgDao.prototype.deleteByCondition = function (condition) {
+    var deferred = Q.defer();
+
+    if(!condition){
+        Util.setTimeoutReject(deferred, {
+            error: '条件不能为空'
+        });
+        return deferred.promise;
+    }
+
+    if(!OrgModel){
+        var schema = new OrgEntity().getSchema();
+        OrgModel = DaoUtil.getModel(schema, _tableName);
+    }
+
+    OrgModel.findOneAndRemove(condition, function (err, data) {
+        if(err){
+            deferred.reject(err);
+        } else{
+            deferred.resolve(data||{});
+        }
+    });
+
+    return deferred.promise;
+
 };
 
 /**

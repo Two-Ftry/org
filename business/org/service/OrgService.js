@@ -172,7 +172,65 @@ OrgService.prototype.updateOrgById = function(org){
  * @param id
  */
 OrgService.prototype.deleteById = function (id) {
+    var deferred = Q.defer();
+
+    if(!id){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__SERVER_ERROR__,
+            msg: 'Id 不能为空'
+        }));
+        return deferred.promise;
+    }
+    //下级组织里面有成员如何处理？
     //TODO
+
+    //同时删除有下级组织
+    //TODO
+
+    orgDao.deleteById(id).then(function(data){
+        deferred.resolve(new Result({
+            code: Code.__SUCCESS__,
+            msg: '',
+            data: data
+        }));
+    }, function (err) {
+        deferred.reject(new Result({
+            code: Code.__SERVER_ERROR__,
+            msg: '删除组织机构失败',
+            error: err
+        }));
+    })
+
+    return deferred.promise;
+};
+
+/**
+ * 根据条件删除组织机构
+ * @param condition
+ */
+OrgService.prototype.deleteByCondition = function (condition) {
+    var deferred = Q.defer();
+
+    if(!condition){
+        Util.setTimeoutReject(deferred, {
+            error: '条件不能为空'
+        });
+    }
+
+    orgDao.deleteByCondition(condition).then(function (data) {
+        deferred.resolve(new Result({
+            code: Code.__SUCCESS__,
+            data: data
+        }));
+    }, function (err) {
+        deferred.reject(new Result({
+            code: Code.__SERVER_ERROR__,
+            error: err,
+            msg: '删除组织机构失败'
+        }));
+    });
+
+    return deferred.promise;
 };
 
 /**
@@ -211,7 +269,28 @@ OrgService.prototype.getOrgById = function(id){
  * @param id
  */
 OrgService.prototype.getSubOrgsByParentOrgId = function (id) {
-    //TODO
+    var deferred = Q.defer();
+
+    if(!id){
+        Util.setTimeoutReject(deferred, new Result({
+            code: Code.__SERVER_ERROR__,
+            msg: 'Id 不能为空'
+        }));
+        return deferred.promise;
+    }
+
+    var query = {
+        parentOrgId: id
+    };
+
+    this.getOrgsByCondition(query).then(function (data) {
+        deferred.resolve(data);
+    }, function (err) {
+        deferred.reject(err);
+    });
+
+
+    return deferred.promise;
 };
 
 /**
@@ -278,7 +357,7 @@ OrgService.prototype.getOrgsByCondition = function (query) {
 
 
 /**
- * 根据tid一次性查出组织机构的所有信息
+ * 根据tid一次性查出组织机构的所有信息(不应该允许这样的操作)
  * @param tid
  */
 OrgService.prototype.getOrgsByTid = function (tid) {

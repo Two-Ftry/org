@@ -63,4 +63,16 @@ router.post('/getTopOrgByTid', function (req, res) {
     });
 });
 
+/**
+ * 根据id删除组织机构
+ */
+router.post('/deleteById', function (req, res) {
+    var id = req.body.id;
+    orgService.deleteById(id).then(function (data) {
+        res.send(data);
+    }, function (err) {
+        res.send(err);
+    });
+});
+
 module.exports = router;
