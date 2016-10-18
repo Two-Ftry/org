@@ -1,6 +1,7 @@
 /**
  * Created by Administrator on 2016/10/5 0005.
  */
+var Result = require('./domain/Result');
 
 var Util = function(){};
 
@@ -49,6 +50,36 @@ Util.setTimeoutReject = function (deferred, result, delay) {
   setTimeout(function () {
       deferred.reject(result);
   }, delay || 20)
+};
+
+/**
+ * 异步回调的返回的封装
+ * @param deferred
+ * @param code
+ * @param data
+ * @param msg
+ */
+Util.resolveWithResult = function (deferred, code, data, msg) {
+    deferred.resolve(new Result({
+        code: code,
+        data: data,
+        msg: msg || ''
+    }));
+};
+
+/**
+ * 异步回调的返回的封装
+ * @param deferred
+ * @param code
+ * @param err
+ * @param msg
+ */
+Util.rejectWithResult = function (deferred, code, err, msg) {
+    deferred.reject(new Result({
+        code: code,
+        error: err,
+        msg: msg
+    }));
 };
 
 module.exports = Util;

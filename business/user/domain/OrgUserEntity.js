@@ -10,7 +10,7 @@ var OrgUserEntity = function (obj) {
         this.orgId = obj.orgId; //组织机构ID
         this.userId = obj.userId; //用户ID
         //this.isPrincipal = obj.isPrincipal; //是否是负责人
-        //this.isPartTime = obj.isPartTime; //是否兼职
+        this.isPartTime = obj.isPartTime; //是否兼职
     }
 };
 

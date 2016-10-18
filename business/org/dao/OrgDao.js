@@ -104,7 +104,16 @@ OrgDao.prototype.deleteByCondition = function (condition) {
         OrgModel = DaoUtil.getModel(schema, _tableName);
     }
 
-    OrgModel.findOneAndRemove(condition, function (err, data) {
+    //OrgModel.findOneAndRemove(condition, function (err, data) {
+    //    if(err){
+    //        deferred.reject(err);
+    //    } else{
+    //        deferred.resolve(data||{});
+    //    }
+    //});
+
+    // executed
+    OrgModel.find().remove(condition, function (err, data) {
         if(err){
             deferred.reject(err);
         } else{
