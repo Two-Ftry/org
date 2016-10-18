@@ -239,9 +239,11 @@ OrgService.prototype.deleteByCondition = function (condition) {
             for(var i = 0, len = data.data.length; i < len; i++){
                 var item = data.data[i];
                 console.log('promise len:', len, item.id || item._id);
-                if(item.id || item._id){
+                var itemId = (item.id || item._id).toString();
+                console.log('itemId:', itemId);
+                if(itemId){
                     console.log(111, me.deleteByCondition);
-                    promiseArray.push(me.deleteByCondition({parentOrgId: item.id || item._id}));
+                    promiseArray.push(me.deleteByCondition({parentOrgId: itemId}));
                     console.log(222);
                 }
             }
