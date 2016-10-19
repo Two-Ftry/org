@@ -124,7 +124,7 @@ TeamService.prototype.getTeamList = function (query) {
     if(!query){
         query = {};
         query.start = ConstUtil.__PAGE_START__;
-        query.limit = ConstUtil.__page_LIMIT__;
+        query.limit = ConstUtil.__PAGE_LIMIT__;
     }
 
     teamDao.getTeamList(query).then(function (dataList) {
