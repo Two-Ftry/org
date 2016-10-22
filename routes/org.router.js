@@ -79,13 +79,32 @@ router.post('/deleteById', function (req, res) {
  * 根据id删除组织机构
  */
 router.post('/getOrgsByTid', function (req, res) {
-    console.log('router orgs by tid!!!');
     var tid = req.body.tid;
-    orgService.getOrgsByTid(tid).then(function (data) {
+    var start = req.body.start;
+    var limit = req.body.limit;
+    orgService.getOrgsByTid({
+        tid: tid,
+        start: start,
+        limit: limit
+    }).then(function (data) {
         res.send(data);
     }, function (err) {
         res.send(err);
     });
+});
+
+/**
+ * 根据父组织机构ID，获取自组织ID
+ */
+router.post('/getSubOrgsByParentOrgId', function (req, res) {
+   var parentOrgId = req.body.parentOrgId;
+    var isPaging = req.body.isPaging;
+    orgService.getSubOrgsByParentOrgId(parentOrgId, isPaging).then(function (data) {
+        res.send(data);
+    }, function(err){
+        res.send(err);
+    });
+
 });
 
 module.exports = router;

@@ -2,6 +2,7 @@
  * Created by Administrator on 2016/10/5 0005.
  */
 var Result = require('./domain/Result');
+var ConstUtil = require('./ConstUtil');
 
 var Util = function(){};
 
@@ -80,6 +81,35 @@ Util.rejectWithResult = function (deferred, code, err, msg) {
         error: err,
         msg: msg
     }));
+};
+
+/**
+ * 处理分页的工具
+ * @param query
+ * @param isPaging
+ * @returns {*}
+ */
+Util.pageCtrl = function (query, isPaging) {
+    if(isPaging == undefined){
+        isPaging = true;
+    }
+    if(!query){
+        query = {};
+    }
+    if(isPaging){
+        if(query.start == undefined || isNaN(query.start)){
+            query.start = ConstUtil.__PAGE_START__;
+        }
+        if(query.limit == undefined || isNaN(query.limit)){
+            query.limit = ConstUtil.__PAGE_LIMIT__;
+        }
+        //如果start 、limit不是數字
+        query.start = parseInt(query.start);
+        query.limit = parseInt(query.limit);
+    }
+
+
+    return query;
 };
 
 module.exports = Util;

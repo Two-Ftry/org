@@ -205,13 +205,28 @@ OrgDao.prototype.getOrgsByCondition = function (condition) {
         OrgModel = DaoUtil.getModel(schema, _tableName);
     }
 
-    OrgModel.find(condition, function (err, data) {
-        if(err){
-            deferred.reject(err);
-        }else{
-            deferred.resolve(data);
-        }
-    });
+    if(condition.limit){//分页
+        var _query = {};
+        Object.assign(_query, condition);
+
+        delete  _query.start;
+        delete  _query.limit;
+        OrgModel.find(_query, null, {skip: condition.start, limit: condition.limit}, function (err, data) {
+            if(err){
+                deferred.reject(err);
+            }else{
+                deferred.resolve(data);
+            }
+        });
+    }else{//不分页
+        OrgModel.find(condition, function (err, data) {
+            if(err){
+                deferred.reject(err);
+            }else{
+                deferred.resolve(data);
+            }
+        });
+    }
 
     return deferred.promise;
 };

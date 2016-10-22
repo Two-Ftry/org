@@ -193,17 +193,17 @@ OrgService.prototype.deleteById = function (id) {
     //要在userServer.moveUserToRootByOrgId、this.deleteByCondition()两个方法执行完成后才能进行
     Q.all(promiseArray).then(function () {
         orgDao.deleteById(id).then(function(data){
-            deferred.resolve(new Result({
-                code: Code.__SUCCESS__,
-                msg: '',
-                data: data
-            }));
-        }, function (err) {
-            deferred.reject(new Result({
-                code: Code.__SERVER_ERROR__,
-                msg: '删除组织机构失败',
-                error: err
-            }));
+                deferred.resolve(new Result({
+                    code: Code.__SUCCESS__,
+                    msg: '',
+                    data: data
+                }));
+            }, function (err) {
+                deferred.reject(new Result({
+                    code: Code.__SERVER_ERROR__,
+                    msg: '删除组织机构失败',
+                    error: err
+                }));
         });
     }, function (err) {
         deferred.reject(err);
@@ -233,7 +233,6 @@ OrgService.prototype.deleteByCondition = function (condition) {
     //删除下级组织(先获取下级组织的id，再去判断是否有下级组织，再删除)
     console.log('condition', condition);
     this.getOrgsByCondition(condition, false).then(function (data) {
-        console.log('get orgs ', data);
         if(data.data && data.data.length > 0){
             var promiseArray = [];
             for(var i = 0, len = data.data.length; i < len; i++){
@@ -245,12 +244,9 @@ OrgService.prototype.deleteByCondition = function (condition) {
             }
             if(promiseArray.length > 0){
                 Q.all(promiseArray).then(function () {
-                    console.log('to delete orgs1 ');
                     orgDao.deleteByCondition(condition).then(function (data) {
-                        console.log('org resolve dao 111');
                         Util.resolveWithResult(deferred, Code.__SUCCESS__, data, '');
                     }, function (err) {
-                        console.log('org reject dao 111');
                         Util.rejectWithResult(deferred, Code.__SERVER_ERROR__, err, '删除组织机构失败');
                     });
                 }, function (c) {
@@ -258,7 +254,6 @@ OrgService.prototype.deleteByCondition = function (condition) {
                     deferred.reject(err);
                 });
             }else{
-                console.log('to delete orgs2 ');
                 //没有下级组织，直接删除
                 orgDao.deleteByCondition(condition).then(function (data) {
                     Util.resolveWithResult(deferred, Code.__SUCCESS__, data, '');
@@ -315,8 +310,9 @@ OrgService.prototype.getOrgById = function(id){
 /**
  * 根据父org的id查询所有下属org信息
  * @param id
+ * @param isPaging 是否分页
  */
-OrgService.prototype.getSubOrgsByParentOrgId = function (id) {
+OrgService.prototype.getSubOrgsByParentOrgId = function (id, isPaging) {
     var deferred = Q.defer();
 
     if(!id){
@@ -331,7 +327,14 @@ OrgService.prototype.getSubOrgsByParentOrgId = function (id) {
         parentOrgId: id
     };
 
-    this.getOrgsByCondition(query, true).then(function (data) {
+    //默认分页
+    if(!isPaging || isPaging === 'true' || isPaging === true){
+        isPaging = true;
+    }else{
+        isPaging = false;
+    }
+
+    this.getOrgsByCondition(query, isPaging).then(function (data) {
         deferred.resolve(data);
     }, function (err) {
         deferred.reject(err);
@@ -388,17 +391,10 @@ OrgService.prototype.getOrgsByCondition = function (query, isPaging) {
         }));
         return deferred.promise;
     }
-    if(isPaging == undefined){
-        isPaging = true;
-    }
-    if(isPaging){
-        if(query.start == undefined || isNaN(query.start)){
-            query.start = ConstUtil.__PAGE_START__;
-        }
-        if(query.limit == undefined || isNaN(query.limit)){
-            query.limit = ConstUtil.__PAGE_LIMIT__;
-        }
-    }
+
+    //处理分页
+    Util.pageCtrl(query, isPaging);
+
     orgDao.getOrgsByCondition(query).then(function(data){
         deferred.resolve(new Result({
             code: Code.__SUCCESS__,
@@ -420,10 +416,10 @@ OrgService.prototype.getOrgsByCondition = function (query, isPaging) {
  * 根据tid一次性查出组织机构的所有信息(不应该允许这样的操作，测试用)
  * @param tid
  */
-OrgService.prototype.getOrgsByTid = function (tid) {
+OrgService.prototype.getOrgsByTid = function (query, isPaging) {
     var deferred = Q.defer();
 
-    if(!tid){
+    if(!query || !query.tid){
         Util.setTimeoutReject(deferred, new Result({
             code: Code.__NOT_FOUND__,
             msg: '条件不能为空'
@@ -432,7 +428,7 @@ OrgService.prototype.getOrgsByTid = function (tid) {
     }
 
     //调用通用方法
-    this.getOrgsByCondition({tid: tid}, false).then(function (data) {
+    this.getOrgsByCondition(query, isPaging).then(function (data) {
         deferred.resolve(data);
     }, function (err) {
         deferred.reject(err);
