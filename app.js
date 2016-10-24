@@ -52,6 +52,7 @@ app.use(session({
 var orgRouter = require('./routes/org.router');
 app.use('/org', orgRouter);
 app.use('/team', require('./routes/team.router'));
+app.use('/role', require('./routes/role.router'));
 
 //404错误处理
 app.use(function(req, res, next) {

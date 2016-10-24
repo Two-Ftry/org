@@ -99,7 +99,13 @@ router.post('/getOrgsByTid', function (req, res) {
 router.post('/getSubOrgsByParentOrgId', function (req, res) {
    var parentOrgId = req.body.parentOrgId;
     var isPaging = req.body.isPaging;
-    orgService.getSubOrgsByParentOrgId(parentOrgId, isPaging).then(function (data) {
+    var start = req.body.start;
+    var limit = req.body.limit;
+    orgService.getSubOrgsByParentOrgId({
+        parentOrgId: parentOrgId,
+        start: start,
+        limit: limit
+    }, isPaging).then(function (data) {
         res.send(data);
     }, function(err){
         res.send(err);

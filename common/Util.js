@@ -106,7 +106,11 @@ Util.pageCtrl = function (query, isPaging) {
         //如果start 、limit不是數字
         query.start = parseInt(query.start);
         query.limit = parseInt(query.limit);
+    }else{
+        delete query.start;
+        delete query.limit;
     }
+
 
 
     return query;

@@ -312,20 +312,16 @@ OrgService.prototype.getOrgById = function(id){
  * @param id
  * @param isPaging 是否分页
  */
-OrgService.prototype.getSubOrgsByParentOrgId = function (id, isPaging) {
+OrgService.prototype.getSubOrgsByParentOrgId = function (query, isPaging) {
     var deferred = Q.defer();
 
-    if(!id){
+    if(!query || !query.parentOrgId){
         Util.setTimeoutReject(deferred, new Result({
             code: Code.__SERVER_ERROR__,
             msg: 'Id 不能为空'
         }));
         return deferred.promise;
     }
-
-    var query = {
-        parentOrgId: id
-    };
 
     //默认分页
     if(!isPaging || isPaging === 'true' || isPaging === true){
