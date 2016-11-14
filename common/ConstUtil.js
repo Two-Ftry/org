@@ -11,6 +11,8 @@ var ConstUtil = function () {
 ConstUtil.__PAGE_START__ = 0;
 //查询的默认限制数量
 ConstUtil.__PAGE_LIMIT__ = 10;
+//用户信息
+ConstUtil.__USER_INFO__ = 'userInfo';
 
 module.exports = ConstUtil;
 

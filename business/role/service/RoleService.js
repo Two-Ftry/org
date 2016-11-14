@@ -136,6 +136,8 @@ RoleService.prototype.deleteById = function (id) {
         return deferred.promise;
     }
 
+    //TODO 删除角色和用户的关联关系
+
     roleDao.deleteById(id).then(function(data){
         deferred.resolve(new Result({
             code: Code.__SUCCESS__,

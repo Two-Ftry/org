@@ -26,7 +26,6 @@ RoleEntity.prototype.getSchema = function() {
         code: {type: String},
         name:{type: String},
         isSys:{type: Boolean},
-        tid:{type: String},
         createTime:{type: Date},
         updateTime:{type: Date},
         remark: {type: String}

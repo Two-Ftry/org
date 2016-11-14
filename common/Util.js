@@ -1,6 +1,8 @@
 /**
  * Created by Administrator on 2016/10/5 0005.
  */
+
+    var crypto = require('crypto');
 var Result = require('./domain/Result');
 var ConstUtil = require('./ConstUtil');
 
@@ -110,9 +112,112 @@ Util.pageCtrl = function (query, isPaging) {
         delete query.limit;
     }
 
-
-
     return query;
+};
+
+/**
+ * 检查手机号码格式是否正确
+ * @param phone
+ */
+Util.checkPhone = function (phone) {
+    if(!phone){
+        return false;
+    }
+    //不是字符串
+    if(!Util.isString(phone)){
+       return false;
+    }
+    var reg = /^1[3-8]\d{9}$/gi;
+    return reg.test(phone);
+};
+
+
+/**
+ * 检查邮件格式是否正确
+ * @param email
+ */
+Util.checkEmail = function (email) {
+  if(!email){
+      return false;
+  }
+  if(!Util.isString(email)){
+      return false;
+  }
+    var reg = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]{2,4}$/gi;
+  //var reg = /^[\w\d_\.\-]+@\w+\.\w+$/gi;
+  return reg.test(email);
+};
+
+/**
+ * 检查字符串是否为空
+ * @param value
+ */
+Util.checkNull = function (value) {
+    return value == undefined || value == false || value == '' || value == null;
+};
+
+/**
+ * 根据传人的字符串和正则表达式进行校验
+ * @param value
+ * @param reg
+ */
+Util.checkRegexp = function (value, reg) {
+  if(!value){
+      return false;
+  }
+  return reg.test(value);
+};
+
+
+/**
+ * 判断传入的值是否为字符串
+ * @param value
+ * @returns {boolean}
+ */
+Util.isString = function (value) {
+    return (typeof value) == 'string';
+};
+
+/**
+ * 判断传入的值是否为数组
+ * @param value
+ * @returns {boolean}
+ */
+Util.isArray = function (value) {
+  return Object.prototype.toString.call(value)  == '[Object Array]';
+};
+
+/**
+ * 判断传入的值是否为函数
+ * @param value
+ * @returns {boolean}
+ */
+Util.isFunction = function(value){
+    return Object.prototype.toString.call(value) == '[Object Function]';
+};
+
+/**
+ * 判断传入的值是否为正则表达式
+ * @param value
+ * @returns {boolean}
+ */
+Util.isRegExp = function (value) {
+    return Object.prototype.toString.call(value) == '[Object RegExp]';
+};
+
+/**
+ * md5加密
+ * @param str
+ * @returns {*}
+ */
+Util.md5 = function (str) {
+    if(!str || !Util.isString(str)){
+        return '';
+    }
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(str);
+    str = md5sum.digest('hex');
+    return str;
 };
 
 module.exports = Util;
