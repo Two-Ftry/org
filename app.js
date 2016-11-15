@@ -33,8 +33,8 @@ app.use(cookieParser());
 //记日志
 var logDirectory = __dirname + '/log';
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-//var logger = require('./config/log4js.js').logger;
-//app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
+var logger = require('./config/log4js.js').logger;
+app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
 
 //use MongoDB session
 app.use(session({
@@ -57,10 +57,6 @@ files.forEach(function(filePath){
     var filenamePrefix = filename.replace('.router.js', '');
     app.use(filenamePrefix, require(filePath));
 });
-//var orgRouter = require('./routes/org.router');
-//app.use('/org', orgRouter);
-//app.use('/team', require('./routes/team.router'));
-//app.use('/role', require('./routes/role.router'));
 
 //404错误处理
 app.use(function(req, res, next) {
@@ -71,7 +67,7 @@ app.use(function(req, res, next) {
 
 //处理错误-（错误中间件）
 app.use(function (err, req, res, next) {
-    //logger.error('Something go wrong', err);
+    logger.error('Something go wrong', err);
     res.status(err.status || 500);
     //res.render('error', {
     //    message: err.message,

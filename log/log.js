@@ -25,3 +25,4 @@ Error: Not Found
     at trim_prefix (E:\gitworkspace\ftryServer\org\node_modules\express\lib\router\index.js:312:13)
     at E:\gitworkspace\ftryServer\org\node_modules\express\lib\router\index.js:280:7
 [2016-09-23 17:36:00.361] [ERROR] dateFileLogger - GET /
+[2016-11-15 22:30:55.512] [INFO] dateFileLogger - POST /user/getUserListByCondition
