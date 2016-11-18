@@ -13,6 +13,9 @@ var log4js = require('log4js');
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
+var ConstUtil = require('./common/ConstUtil');
+var Util = require('./common/Util');
+var url = require('url');
 
 //MongoDB session
 const session = require('express-session');
@@ -33,8 +36,8 @@ app.use(cookieParser());
 //记日志
 var logDirectory = __dirname + '/log';
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-var logger = require('./config/log4js.js').logger;
-app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
+//var logger = require('./config/log4js.js').logger;
+//app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
 
 //use MongoDB session
 app.use(session({
@@ -49,6 +52,25 @@ app.use(session({
         mongooseConnection: connection
     })
 }));
+
+//路由前置中间件
+var unloginRouter = require('./config/UnloginRouter.config');
+app.use(function (req, res, next) {
+    var routerPath = url.parse(req.url).path;
+    console.log('routerPath', routerPath);
+    if(!Util.isArrayContains(unloginRouter, routerPath)){
+        var userInfo = req.session[ConstUtil.__USER_INFO__];
+        if(!userInfo){
+            res.status(200);
+            res.json({
+                code: 100,
+                msg: 'you are not login'
+            });
+            return;
+        }
+    }
+    next();
+});
 
 //路由配置(自动读取，不需要每次都配置)
 var files = glob.sync('./routes/**.router.js');
@@ -67,7 +89,7 @@ app.use(function(req, res, next) {
 
 //处理错误-（错误中间件）
 app.use(function (err, req, res, next) {
-    logger.error('Something go wrong', err);
+    //logger.error('Something go wrong', err);
     res.status(err.status || 500);
     //res.render('error', {
     //    message: err.message,

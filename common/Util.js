@@ -3,6 +3,7 @@
  */
 
     var crypto = require('crypto');
+var uuid = require('uuid');
 var Result = require('./domain/Result');
 var ConstUtil = require('./ConstUtil');
 
@@ -218,6 +219,46 @@ Util.md5 = function (str) {
     md5sum.update(str);
     str = md5sum.digest('hex');
     return str;
+};
+
+/**
+ * 获取基于时间的uuid
+ * @returns {*}
+ */
+Util.getUuid = function () {
+    return Util.getUuidV1();
+};
+/**
+ * 获取基于时间的uuid
+ * @returns {*}
+ */
+Util.getUuidV1 = function () {
+    return uuid.v1();
+};
+
+/**
+ * 随机的uuid值
+ * @returns {*}
+ */
+Util.getUuidV4 = function () {
+    return uuid.v4();
+};
+
+/**
+ * 数组中是否包含某个值
+ * @param arr
+ * @param val
+ */
+Util.isArrayContains = function (arr, val) {
+    if(!arr || !Util.isArray(arr) || !val){
+        return false;
+    }
+    for(var i = 0, len = arr.length; i < len; i++){
+        if(arr[i] == val){
+            return true;
+        }
+    }
+    return false;
 };
 
 module.exports = Util;

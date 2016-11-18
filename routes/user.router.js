@@ -39,6 +39,8 @@ router.post('/login', function (req, res) {
        //存入session
         if(data && data.data){
             delete data.data.password;
+            //csrf随机值
+            req.session[ConstUtil.__CSRF__] = Util.getUuid();
         }
        req.session[ConstUtil.__USER_INFO__] = data && data.data ? data.data : {};
        res.send(new Result({
