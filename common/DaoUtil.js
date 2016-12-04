@@ -41,5 +41,17 @@ DaoUtil.getModel = function(columnsJson, tableName){
     return DaoUtil.connection.model(tableName, _schema);
 };
 
+/**
+ * 将obj的id，换成_id
+ * @param obj
+ */
+DaoUtil.replaceIdWithUnderlineId = function (obj) {
+    if(obj.id){
+        obj._id = obj.id;
+        delete obj.id;
+    }
+    return obj;
+};
+
 
 module.exports = DaoUtil;

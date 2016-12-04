@@ -9,6 +9,8 @@ var PredefinedRoleEntity =  function (obj) {
         this.code = obj.code; //角色编码
         this.name = obj.name; //角色名称(管理员、负责人)
         this.isSys = obj.isSys; //是否是系统定义的角色
+        this.createTime = obj.createTime;//创建时间
+        this.updateTime = obj.updateTime; //修改时间
         this.remark = obj.remark; //备注
     }
 };
@@ -20,6 +22,8 @@ PredefinedRoleEntity.prototype.getSchema = function(){
         code: {type: String},
         name:{type: String},
         isSys:{type: Boolean},
+        createTime:{type: Date},
+        updateTime:{type: Date},
         remark: {type: String}
     };
 };

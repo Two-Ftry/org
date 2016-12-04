@@ -23,7 +23,6 @@ Util.getEntityInstance = function(reqBody, entity, isWithId){
                 val = parseFloat(val);
             }
             entity[key] = val ? val : '';
-            console.log('getEntityInstance: %s-%s', key, val);
         }
     }
     return entity;

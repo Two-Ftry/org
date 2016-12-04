@@ -11,6 +11,8 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var log4js = require('log4js');
 var fs = require('fs');
+var glob = require('glob');
+var path = require('path');
 
 //MongoDB session
 const session = require('express-session');
@@ -48,11 +50,17 @@ app.use(session({
     })
 }));
 
-//路由配置
-var orgRouter = require('./routes/org.router');
-app.use('/org', orgRouter);
-app.use('/team', require('./routes/team.router'));
-app.use('/role', require('./routes/role.router'));
+//路由配置(自动读取，不需要每次都配置)
+var files = glob.sync('./routes/**.router.js');
+files.forEach(function(filePath){
+    var filename = filePath.replace(path.dirname(filePath), '');
+    var filenamePrefix = filename.replace('.router.js', '');
+    app.use(filenamePrefix, require(filePath));
+});
+//var orgRouter = require('./routes/org.router');
+//app.use('/org', orgRouter);
+//app.use('/team', require('./routes/team.router'));
+//app.use('/role', require('./routes/role.router'));
 
 //404错误处理
 app.use(function(req, res, next) {
