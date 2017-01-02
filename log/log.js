@@ -26,6 +26,7 @@ Error: Not Found
     at E:\gitworkspace\ftryServer\org\node_modules\express\lib\router\index.js:280:7
 [2016-09-23 17:36:00.361] [ERROR] dateFileLogger - GET /
 [2016-11-15 22:30:55.512] [INFO] dateFileLogger - POST /user/getUserListByCondition
+<<<<<<< HEAD
 [2016-12-31 14:17:55.057] [INFO] dateFileLogger - POST /team/getTeamList
 [2016-12-31 14:28:32.282] [INFO] dateFileLogger - POST /team/getTeamList
 [2016-12-31 14:29:31.672] [INFO] dateFileLogger - POST /team/getTeamList
@@ -33,3 +34,9 @@ Error: Not Found
 [2016-12-31 14:32:34.763] [INFO] dateFileLogger - POST /team/getTeamList
 [2016-12-31 14:32:46.970] [INFO] dateFileLogger - POST /team/getTeamList
 [2016-12-31 14:33:10.060] [INFO] dateFileLogger - POST /team/getTeamList
+=======
+[2016-11-18 10:30:00.134] [INFO] dateFileLogger - POST /user/getUserListByCondition
+[2016-11-18 10:30:27.843] [INFO] dateFileLogger - POST /user/getUserListByCondition
+[2016-11-18 10:31:35.455] [INFO] dateFileLogger - POST /user/getUserListByCondition
+[2016-11-18 10:31:52.923] [INFO] dateFileLogger - POST /user/getUserListByCondition
+>>>>>>> 2df01af3eab3799479e8a3a8ead350e073813fdf

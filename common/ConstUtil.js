@@ -13,6 +13,8 @@ ConstUtil.__PAGE_START__ = 0;
 ConstUtil.__PAGE_LIMIT__ = 10;
 //用户信息
 ConstUtil.__USER_INFO__ = 'userInfo';
+//防止csrf攻击的随机码
+ConstUtil.__CSRF__ = '_csrf';
 
 module.exports = ConstUtil;
 
