@@ -82,7 +82,7 @@ files.forEach(function(filePath){
 
 //404错误处理
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('404 Not Found');
     err.status = 404;
     next(err);
 });
