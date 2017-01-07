@@ -34,5 +34,5 @@ describe('team模块测试用例', function () {
                expect(res.body.code).to.be.not.equal(0);
                 done();
             });
-    })
+    });
 });
