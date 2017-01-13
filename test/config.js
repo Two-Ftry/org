@@ -4,7 +4,6 @@
  */
 
 var config = {
-  __FTRY_HOME__: 'http://localhost:3001/',
     __EMAIL__: '1307516522@qq.com',
     __PWD__: '123456'
 };

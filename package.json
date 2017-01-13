@@ -4,8 +4,9 @@
   "description": "ftry org",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "hotnode ./bin/www"
+    "test": "mocha --recursive --bail",
+    "start": "hotnode ./bin/www",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha"
   },
   "keywords": [
     "ftry",
@@ -35,6 +36,7 @@
     "mocha": "^3.2.0",
     "superagent": "^3.3.1",
     "q": "^1.4.1",
-    "blanket": "^1.2.3"
+    "blanket": "^1.2.3",
+    "supertest": "^2.0.1"
   }
 }

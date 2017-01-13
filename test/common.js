@@ -2,8 +2,9 @@
  * 获取登录使用的cookie
  * Created by Administrator on 2017/1/6.
  */
-var request = require('superagent');
+var request = require('supertest');
 var config = require('./config');
+var app = require('../app.js');
 var _cookie;
 /**
  * 获取登录cookie
@@ -14,7 +15,7 @@ var getLoginCookie = function(cb){
     if(_cookie){
         cb && cb(_cookie);
     }else{
-        request.post( config.__FTRY_HOME__ + 'user/login')
+        request(app).post('/user/login')
         .send({email: config.__EMAIL__, password: config.__PWD__})
         .end(function(err, res){
             _cookie = res.headers['set-cookie'];
@@ -25,11 +26,14 @@ var getLoginCookie = function(cb){
 
 var ftryRequest = {
     post: function(url){
-        return request.post(url)
+        return request(app)
+        .post(url)
         .set('Cookie', _cookie ? _cookie[0] : '');
     },
     get: function(url){
-        return request.get(url)
+        return
+            request(app)
+            .get(url)
             .set('Cookie', _cookie ? _cookie[0] : '');
     }
 }
