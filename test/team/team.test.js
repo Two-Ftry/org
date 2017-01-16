@@ -16,6 +16,16 @@ describe('team testing', function(){
       });
 
   });
+  it('getTeamById', function(done){
+    common.ftryRequest
+      .post('/team/getTeamById')
+      .send({id:''})
+      .expect(200)
+      .end(function(err, res){
+        expect(res.body.code).to.be.equal(400);
+        done();
+      });
+  });
   it('getTeamList', function(done){
     common.ftryRequest
         .post('/team/getTeamList')

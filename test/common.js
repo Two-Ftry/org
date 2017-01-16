@@ -6,6 +6,9 @@ var request = require('supertest');
 var config = require('./config');
 var app = require('../app.js');
 var _cookie;
+
+var _contentType = 'application/json; charset=utf-8';
+
 /**
  * 获取登录cookie
  * @param done
@@ -25,16 +28,29 @@ var getLoginCookie = function(cb){
 };
 
 var ftryRequest = {
-    post: function(url){
-        return request(app)
+    post: function(url, contentType){
+      var supertestObj = request(app)
         .post(url)
         .set('Cookie', _cookie ? _cookie[0] : '');
+      if(!contentType){
+        supertestObj.expect('Content-Type', _contentType);
+      }else{
+        supertestObj.expect('Content-Type', contentType);
+      }
+      return supertestObj;
     },
-    get: function(url){
-        return
-            request(app)
+    get: function(url, contentType){
+        var supertestObj =request(app)
             .get(url)
             .set('Cookie', _cookie ? _cookie[0] : '');
+
+            if(!contentType){
+              supertestObj.expect('Content-Type', _contentType);
+            }else{
+              supertestObj.expect('Content-Type', contentType);
+            }
+            return supertestObj;
+
     }
 }
 
