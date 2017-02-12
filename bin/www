@@ -2,39 +2,14 @@
 var app = require('../app');
 var port = 3001;
 var http = require('http');
-var cluster = require('cluster');
-var cpuNums = require('os').cpus().length;
 
-var server;
+var server = http.createServer(app);
 
-if(cluster.isMaster){
-    for(var i = 0; i < cpuNums; i++){
-        cluster.fork();
-    }
+server.listen(port);
+server.on('error', function(){
+    console.log('server error');
+});
 
-    cluster.on('listening', function(worker, address){
-        console.log('process ' + worker.process.pid + ' start, address : port-- ' + address.address + ':' + address.port);
-    });
-
-    cluster.on('exit', function(worker, address){
-        console.log('process ' + worker.process.pid + ' is died');
-    });
-
-}else{
-
-    server = http.createServer(app);
-
-    server.listen(port);
-    server.on('error', function(){
-        console.log('server error');
-    });
-
-    server.on('listening', function(){
-        console.log('listening on ' +　port);
-
-    });
-
-    //app.listen(port, function(){
-    //    console.log('server is listening in http://localhost:' + port);
-    //});
-}
+server.on('listening', function(){
+    console.log('listening on ' +　port);
+});
