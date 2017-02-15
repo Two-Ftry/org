@@ -35,6 +35,7 @@ router.post('/save', function (req, res) {
  */
 router.post('/login', function (req, res) {
     var entity = Util.getEntityInstance(req.body, new UserEntity());
+    console.log('/login console.log');
     userService.login(entity).then(function (data) {
        //存入session
         if(data && data.data){

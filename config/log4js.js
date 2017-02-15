@@ -7,28 +7,25 @@
 
 var log4js = require('log4js');
 
-log4js.configure({
-    appenders: [
-        {
-            type: 'console',
-            category: 'consoleLogger'
-        },
-        {
-            type: 'file',
-            filename: 'log/log.js',
-            pattern: '-yyyy-MM-dd',
-            maxLogSize: 10240,
-            category: 'dateFileLogger'
-        }
-    ],
-    replaceConsole: true,
-    levels: {
-        consoleLogger: 'debug',
-        dateFileLogger: 'debug'
-    }
-});
+var defaultLogger = 'logDate';
+
+var configFile = process.env.NODE_ENV ? '-' + process.env.NODE_ENV : '';
+var config = require('./log4js' + configFile + '.json');
+
+log4js.configure(config);
 
 var consoleLogger = log4js.getLogger('consoleLogger');
 var dateFileLogger = log4js.getLogger('dateFileLogger');
 
-exports.logger = dateFileLogger;
+var getLogger = function(name){
+  name = name ? name : defaultLogger;
+  var logger = log4js.getLogger(name);
+  if(!logger){
+    logger = log4js.getLogger(defaultLogger);
+  }
+  return logger;
+};
+
+module.exports = {
+  getLogger: getLogger
+};
