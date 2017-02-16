@@ -57,7 +57,7 @@ app.use(session({
 var unloginRouter = require('./config/UnloginRouter.config');
 app.use(function (req, res, next) {
     var routerPath = url.parse(req.url).path;
-    console.log('routerPath', routerPath);
+
     if(!Util.isArrayContains(unloginRouter, routerPath)){
         var userInfo = req.session[ConstUtil.__USER_INFO__];
         if(!userInfo){

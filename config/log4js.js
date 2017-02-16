@@ -10,7 +10,12 @@ var log4js = require('log4js');
 var defaultLogger = 'logDate';
 
 var configFile = process.env.NODE_ENV ? '-' + process.env.NODE_ENV : '';
-var config = require('./log4js' + configFile + '.json');
+var config;
+try{
+  config = require('./log4js' + configFile + '.json');
+}catch(e){
+  config = require('./log4js.json');
+}
 
 log4js.configure(config);
 

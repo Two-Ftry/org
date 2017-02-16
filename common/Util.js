@@ -250,9 +250,6 @@ Util.getUuidV4 = function () {
  * @param val
  */
 Util.isArrayContains = function (arr, val) {
-    console.log(!arr);
-    console.log(!Util.isArray(arr));
-    console.log(!val);
     if(!arr || !Util.isArray(arr) || !val){
         return false;
     }
