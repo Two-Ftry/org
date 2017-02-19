@@ -19,9 +19,6 @@ try{
 
 log4js.configure(config);
 
-var consoleLogger = log4js.getLogger('consoleLogger');
-var dateFileLogger = log4js.getLogger('dateFileLogger');
-
 var getLogger = function(name){
   name = name ? name : defaultLogger;
   var logger = log4js.getLogger(name);

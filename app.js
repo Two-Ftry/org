@@ -36,7 +36,7 @@ app.use(cookieParser());
 //记日志
 var logDirectory = __dirname + '/log';
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-var logger = require('./config/log4js.js').getLogger();
+var logger = require('./config/logHelper.js').getLogger();
 app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
 
 //use MongoDB session
