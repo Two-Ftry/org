@@ -13,6 +13,7 @@ var Util = require('../common/Util');
 var ConstUtil = require('../common/ConstUtil');
 var Result = require('../common/domain/Result');
 var Code = require('../common/domain/Code');
+var logHelper = require('../common/logHelper');
 
 var userService = new UserService();
 
@@ -24,7 +25,7 @@ router.post('/save', function (req, res) {
     userService.save(entity).then(function (data) {
         res.send(data);
     }, function (err) {
-        console.log('user router', err);
+        logHelper.error('user/save',err);
         res.send(err);
     });
 
@@ -49,6 +50,7 @@ router.post('/login', function (req, res) {
            msg: 'login success'
        }));
     }, function (err) {
+        logHelper.error('user/login', err);
         res.send(err);
     });
 });
@@ -61,7 +63,7 @@ router.post('/updateById', function (req, res) {
     userService.updateById(entity).then(function (data) {
         res.send(data);
     }, function (err) {
-        console.log('user router', err);
+        logHelper.error('user/updateById', err);
         res.send(err);
     });
 
@@ -75,7 +77,7 @@ router.post('/getUserListByCondition', function (req, res) {
     userService.getUserListByCondition().then(function (data) {
         res.send(data);
     }, function (err) {
-        console.log('user router', err);
+        logHelper.error('user/getUserListByCondition', err);
         res.send(err);
     });
 
@@ -89,6 +91,7 @@ router.post('/getUserById', function (req, res) {
     userService.getUserById(id).then(function (data) {
         res.send(data);
     }, function(err){
+        logHelper.error('user/getUserById', err);
         res.send(err);
     });
 });
@@ -101,6 +104,7 @@ router.post('/deleteById', function (req, res) {
     userService.deleteById(id).then(function (data) {
         res.send(data);
     }, function(err){
+        logHelper.error('user/deleteById', err);
         res.send(err);
     });
 });

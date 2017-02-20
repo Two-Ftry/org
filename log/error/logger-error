@@ -1,0 +1,7 @@
+[2017-02-20 19:22:39.627] [ERROR] logError - { code: 0,
+  msg: '错误测试',
+  error: undefined,
+  data: { data: 'error' } }
+[2017-02-20 19:24:20.574] [ERROR] logError - { code: 400, msg: '邮箱格式不正确', error: undefined, data: undefined }
+[2017-02-20 19:25:20.845] [ERROR] logError - user/login
+[2017-02-20 19:33:05.279] [ERROR] logError - user/login - {"code":400,"msg":"邮箱格式不正确"}
