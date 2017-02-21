@@ -24,11 +24,31 @@ var helper = {};
 var appenders = config.appenders;
 for(var i = 0, len = appenders.length; i < len; i++){
   var filename = appenders[i].filename;
-  if(filename){
-    var filepath = path.resolve(__dirname, '.' + filename);
+  if(filename && appenders[i].type != 'console'){
+    var baseDir = appenders[i].baseDir || config.baseDir;
+    appenders[i].filename = baseDir + appenders[i].filename;
+    var filepath = path.resolve(baseDir, filename);
     var filedir = path.dirname(filepath);
-    if(!fs.existsSync(filedir)){
-      fs.mkdirSync(filedir);
+    var filedirs = filedir.split(path.sep);
+    var _fileTemp = '';
+    if(process.platform != 'win32'){
+      _fileTemp = path.sep;
+    }
+    //逐层创建日志目录
+    for(var j = 0, jLen = filedirs.length; j < jLen; j++){
+      if(j == 0){
+        if(process.platform != 'win32'){
+          _fileTemp += path.sep + filedirs[j];
+        }else{
+          _fileTemp += filedirs[j];
+        }
+      }else{
+        _fileTemp += path.sep + filedirs[j];
+      }
+
+      if(!fs.existsSync(_fileTemp)){
+        fs.mkdirSync(_fileTemp);
+      }
     }
   }
 }

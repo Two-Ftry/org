@@ -1,4 +1,5 @@
 {
+  "baseDir": "/usr/release/log/",
   "appenders": [
     {
       "category": "console",
@@ -7,7 +8,7 @@
     {
       "category": "logDebug",
       "type": "dateFile",
-      "filename": "./log/debug/logger-debug",
+      "filename": "debug/logger-debug",
       "maxLogSize": 104800,
       "pattern": "-yyyy-MM-dd.log",
       "alwaysIncluePattern": true
@@ -15,7 +16,7 @@
     {
       "category": "logInfo",
       "type": "dateFile",
-      "filename": "./log/info/logger-info",
+      "filename": "info/logger-info",
       "maxLogSize": 104800,
       "pattern": "-yyyy-MM-dd.log",
       "alwaysIncluePattern": true
@@ -23,7 +24,7 @@
     {
       "category": "logWarn",
       "type": "dateFile",
-      "filename": "./log/warn/logger-warn",
+      "filename": "warn/logger-warn",
       "maxLogSize": 104800,
       "pattern": "-yyyy-MM-dd.log",
       "alwaysIncluePattern": true
@@ -31,7 +32,7 @@
     {
       "category": "logError",
       "type": "dateFile",
-      "filename": "./log/error/logger-error",
+      "filename": "error/logger-error",
       "maxLogSize": 104800,
       "pattern": "-yyyy-MM-dd.log",
       "alwaysIncluePattern": true
